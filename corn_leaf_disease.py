@@ -62,18 +62,21 @@ def preprocess_images(images):
         # Konversi dari RGB ke YCrCb
         img_ycrcb = cv2.cvtColor(img, cv2.COLOR_RGB2YCrCb)
         y, cr, cb = cv2.split(img_ycrcb)
-
-        # Menggunakan Gaussian Blur pada saluran Y
-        # y_blurred = cv2.GaussianBlur(y, (15, 15), 0)
         
         # Equalisasi histogram pada saluran Y
         y_eq = cv2.equalizeHist(y)
+
+        # y_blurred = cv2.medianBlur(y_eq, 3)
+
+        # Menggabungkan seluruh saluran Y, Cr, dan Cb
         img_ycrcb_eq = cv2.merge([y_eq, cr, cb])
 
         # img_blur = cv2.GaussianBlur(img_ycrcb_eq, (3, 3), 0)
 
+        img_bilateral = cv2.bilateralFilter(img_ycrcb_eq, 9, 35, 35)
+
         # Kembali ke RGB
-        img_rgb = cv2.cvtColor(img_ycrcb_eq, cv2.COLOR_YCrCb2RGB)
+        img_rgb = cv2.cvtColor(img_bilateral, cv2.COLOR_YCrCb2RGB)
 
         # Normalisasi
         img_normalized = img_rgb / 255.0
